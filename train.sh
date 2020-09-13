@@ -3,14 +3,27 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python train.py --batchSize=16 \
                 --crop_width=528 \
                 --max_disp=192 \
                 --thread=16 \
-                --data_path='/ssd1/zhangfeihu/data/stereo/' \
-                --training_list='lists/sceneflow_train.list' \
+                --data_path='/data/' \
+                --training_list='lists/short_sceneflow_train.list' \
                 --save_path='./checkpoint/sceneflow' \
                 --resume='' \
                 --model='GANet_deep' \
                 --nEpochs=11 2>&1 |tee logs/log_train_sceneflow.txt
 
 exit
+#Original code
+CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python train.py --batchSize=16 \
+                --crop_height=240 \
+                --crop_width=528 \
+                --max_disp=192 \
+                --thread=16 \
+                --data_path='/ssd1/zhangfeihu/data/stereo/' \
+                --training_list='lists/sceneflow_train.list' \
+                --save_path='./checkpoint/sceneflow' \
+                --resume='' \
+                --model='GANet_deep' \
+                --nEpochs=11 2>&1 |tee logs/log_train_sceneflow.txt
+				
 #Fine tuning for kitti 2015
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python train.py --batchSize=16 \
                 --crop_height=240 \
