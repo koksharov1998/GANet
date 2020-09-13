@@ -133,7 +133,10 @@ def train(epoch):
             print("===> Epoch[{}]({}/{}): Loss: {:.4f}, Error: ({:.4f} {:.4f} {:.4f})".format(epoch, iteration, len(training_data_loader), loss.item(), error0.item(), error1.item(), error2.item()))
             sys.stdout.flush()
 
-    print("===> Epoch {} Complete: Avg. Loss: {:.4f}, Avg. Error: ({:.4f} {:.4f} {:.4f})".format(epoch, epoch_loss / valid_iteration,epoch_error0/valid_iteration,epoch_error1/valid_iteration,epoch_error2/valid_iteration))
+	try:
+		print("===> Epoch {} Complete: Avg. Loss: {:.4f}, Avg. Error: ({:.4f} {:.4f} {:.4f})".format(epoch, epoch_loss / valid_iteration,epoch_error0/valid_iteration,epoch_error1/valid_iteration,epoch_error2/valid_iteration))
+	except ZeroDivisionError:
+		print("valid_iteration was equal to 0!")
 
 def val():
     epoch_error2 = 0
@@ -158,8 +161,12 @@ def val():
                 epoch_error2 += error2.item()      
                 print("===> Test({}/{}): Error: ({:.4f})".format(iteration, len(testing_data_loader), error2.item()))
 
-    print("===> Test: Avg. Error: ({:.4f})".format(epoch_error2 / valid_iteration))
-    return epoch_error2 / valid_iteration
+	try:
+		print("===> Test: Avg. Error: ({:.4f})".format(epoch_error2 / valid_iteration))
+		return epoch_error2 / valid_iteration
+	except ZeroDivisionError:
+		print("valid_iteration was equal to 0!")
+		return -1
 
 def save_checkpoint(save_path, epoch,state, is_best):
     filename = save_path + "_epoch_{}.pth".format(epoch)
