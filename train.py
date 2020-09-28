@@ -101,6 +101,7 @@ def train(epoch):
         mask.detach_()
         valid = target[mask].size()[0]
         if valid > 0:
+            print("I am in this 'if valid > 0:'")
             optimizer.zero_grad()
             
             if opt.model == 'GANet11':
