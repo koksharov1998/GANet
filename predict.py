@@ -24,12 +24,8 @@ Debug = True
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
-if Debug:
-    parser.add_argument('--crop_height', type=int, default=384, help="crop height")
-    parser.add_argument('--crop_width', type=int, default=144, help="crop width")
-else:
-    parser.add_argument('--crop_height', type=int, required=True, help="crop height")
-    parser.add_argument('--crop_width', type=int, required=True, help="crop width")
+parser.add_argument('--crop_height', type=int, required=True, help="crop height")
+parser.add_argument('--crop_width', type=int, required=True, help="crop width")
 parser.add_argument('--max_disp', type=int, default=192, help="max disp")
 parser.add_argument('--resume', type=str, default='', help="resume from saved model")
 parser.add_argument('--cuda', type=bool, default=True, help='use cuda?')
