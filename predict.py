@@ -20,22 +20,36 @@ from torch.utils.data import DataLoader
 from dataloader.data import get_test_set
 import numpy as np
 
+Debug = True
+
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
-parser.add_argument('--crop_height', type=int, required=True, help="crop height")
-parser.add_argument('--crop_width', type=int, required=True, help="crop width")
+if Debug:
+    parser.add_argument('--crop_height', type=int, default=384, help="crop height")
+    parser.add_argument('--crop_width', type=int, default=144, help="crop width")
+else:
+    parser.add_argument('--crop_height', type=int, required=True, help="crop height")
+    parser.add_argument('--crop_width', type=int, required=True, help="crop width")
 parser.add_argument('--max_disp', type=int, default=192, help="max disp")
 parser.add_argument('--resume', type=str, default='', help="resume from saved model")
 parser.add_argument('--cuda', type=bool, default=True, help='use cuda?')
 parser.add_argument('--kitti', type=int, default=0, help='kitti dataset? Default=False')
 parser.add_argument('--kitti2015', type=int, default=0, help='kitti 2015? Default=False')
-parser.add_argument('--data_path', type=str, required=True, help="data root")
-parser.add_argument('--test_list', type=str, required=True, help="training list")
+if Debug:
+    parser.add_argument('--data_path', type=str, default='/test/', help="data root")
+    parser.add_argument('--test_list', type=str, default='lists/short_sceneflow_test.list', help="training list")
+else:
+    parser.add_argument('--data_path', type=str, required=True, help="data root")
+    parser.add_argument('--test_list', type=str, required=True, help="training list")
 parser.add_argument('--save_path', type=str, default='./result/', help="location to save result")
 parser.add_argument('--model', type=str, default='GANet_deep', help="model to train")
 
 opt = parser.parse_args()
 
+if Debug:
+    opt.max_disp = 192
+    opt.save_path = './result/'
+    opt.resume='./checkpoint/sceneflow_epoch_10.pth'
 
 print(opt)
 if opt.model == 'GANet11':
@@ -90,8 +104,9 @@ def test_transform(temp_data, crop_height, crop_width):
     return torch.from_numpy(left).float(), torch.from_numpy(right).float(), h, w
 
 def load_data(leftname, rightname):
-    left = Image.open(leftname)
-    right = Image.open(rightname)
+    # print(os.getcwd())
+    left = Image.open(os.getcwd() + leftname)
+    right = Image.open(os.getcwd() + rightname)
     size = np.shape(left)
     height = size[0]
     width = size[1]

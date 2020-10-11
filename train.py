@@ -17,11 +17,19 @@ from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from dataloader.data import get_training_set, get_test_set
 
+Debug = True
+
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
-parser.add_argument('--crop_height', type=int, required=True, help="crop height")
+if Debug:
+    parser.add_argument('--crop_height', type=int, default=240, help="crop height")
+else:
+    parser.add_argument('--crop_height', type=int, required=True, help="crop height")
 parser.add_argument('--max_disp', type=int, default=192, help="max disp")
-parser.add_argument('--crop_width', type=int, required=True, help="crop width")
+if Debug:
+    parser.add_argument('--crop_width', type=int, default=528, help="crop width")
+else:
+    parser.add_argument('--crop_width', type=int, required=True, help="crop width")
 parser.add_argument('--resume', type=str, default='', help="resume from saved model")
 parser.add_argument('--left_right', type=int, default=0, help="use right view for training. Default=False")
 parser.add_argument('--batchSize', type=int, default=1, help='training batch size')
@@ -41,6 +49,19 @@ parser.add_argument('--save_path', type=str, default='./checkpoint/', help="loca
 parser.add_argument('--model', type=str, default='GANet_deep', help="model to train")
 
 opt = parser.parse_args()
+
+if Debug:
+    opt.batchSize = 16
+    opt.crop_height = 240
+    opt.crop_width = 528
+    opt.max_disp = 192
+    opt.thread = 16
+    opt.data_path = '/data/'
+    opt.training_list = 'lists/short_sceneflow_train.list'
+    opt.save_path='./checkpoint/sceneflow'
+    opt.resume = ''
+    opt.model = 'GANet_deep'
+
 
 print(opt)
 if opt.model == 'GANet11':
@@ -187,6 +208,8 @@ def adjust_learning_rate(optimizer, epoch):
 
 if __name__ == '__main__':
     error=100
+    if Debug:
+        opt.nEpochs = 6
     for epoch in range(1, opt.nEpochs + 1):
 #        if opt.kitti or opt.kitti2015:
         adjust_learning_rate(optimizer, epoch)

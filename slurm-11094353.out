@@ -1,0 +1,2 @@
+slurmstepd: error: execve(): compile.sh: Permission denied
+srun: error: apollo20: task 0: Exited with exit code 13
