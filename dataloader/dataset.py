@@ -1,3 +1,5 @@
+import os
+
 import torch.utils.data as data
 import skimage
 import skimage.io
@@ -47,7 +49,6 @@ def readPFM(file):
 
 def train_transform(temp_data, crop_height, crop_width, left_right=False, shift=0):
     _, h, w = np.shape(temp_data)
-    
     if h > crop_height and w <= crop_width:
         temp = temp_data
         temp_data = np.zeros([8, h+shift, crop_width + shift], 'float32')
@@ -116,8 +117,9 @@ def test_transform(temp_data, crop_height, crop_width, left_right=False):
 
 def load_data(data_path, current_file):
     A = current_file
+    data_path = os.getcwd() + data_path
     filename = data_path + 'frames_finalpass/' + A[0: len(A) - 1]
-    left  =Image.open(filename)
+    left = Image.open(filename)
     filename = data_path + 'frames_finalpass/' + A[0: len(A) - 14] + 'right/' + A[len(A) - 9:len(A) - 1]
     right = Image.open(filename)
     filename = data_path + 'disparity/' + A[0: len(A) - 4] + 'pfm'
@@ -232,6 +234,7 @@ def load_kitti2015_data(file_path, current_file):
 class DatasetFromList(data.Dataset): 
     def __init__(self, data_path, file_list, crop_size=[256, 256], training=True, left_right=False, kitti=False, kitti2015=False, shift=0):
         super(DatasetFromList, self).__init__()
+        print("Initialization dataset")
         #self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         f = open(file_list, 'r')
         self.data_path = data_path
@@ -245,6 +248,7 @@ class DatasetFromList(data.Dataset):
         self.shift = shift
 
     def __getitem__(self, index):
+        print("Get item from dataset")
     #    print self.file_list[index]
         if self.kitti: #load kitti dataset
             temp_data = load_kitti_data(self.data_path, self.file_list[index])

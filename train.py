@@ -17,6 +17,8 @@ from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from dataloader.data import get_training_set, get_test_set
 
+from PIL import Image
+
 Debug = True
 
 # Training settings
@@ -83,7 +85,8 @@ if cuda:
 print('===> Loading datasets')
 train_set = get_training_set(opt.data_path, opt.training_list, [opt.crop_height, opt.crop_width], opt.left_right, opt.kitti, opt.kitti2015, opt.shift)
 test_set = get_test_set(opt.data_path, opt.val_list, [576,960], opt.left_right, opt.kitti, opt.kitti2015)
-training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True, drop_last=True)
+#training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True, drop_last=True)
+training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True)
 testing_data_loader = DataLoader(dataset=test_set, num_workers=opt.threads, batch_size=opt.testBatchSize, shuffle=False)
 
 print('===> Building model')
@@ -110,14 +113,18 @@ def train(epoch):
     epoch_error2 = 0
     valid_iteration = 0
     model.train()
+
+    #for iteration, batch in enumerate(train_set):
     for iteration, batch in enumerate(training_data_loader):
+
         input1, input2, target = Variable(batch[0], requires_grad=True), Variable(batch[1], requires_grad=True), Variable(batch[2], requires_grad=False)
+        #input1, input2, target = Variable(torch.from_numpy(batch[0]), requires_grad=True), Variable(torch.from_numpy(batch[1]), requires_grad=True), Variable(torch.from_numpy(batch[2]), requires_grad=False)
         if cuda:
             input1 = input1.cuda()
             input2 = input2.cuda()
             target = target.cuda()
 
-        target=torch.squeeze(target,1)
+        target = torch.squeeze(target, 1)
         mask = target < opt.max_disp
         mask.detach_()
         valid = target[mask].size()[0]
