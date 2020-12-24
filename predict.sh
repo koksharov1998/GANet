@@ -5,7 +5,7 @@ python predict.py --crop_height=384 \
                   --data_path='/test/' \
                   --test_list='lists/short_sceneflow_test.list' \
                   --save_path='./result/' \
-                  --resume='./checkpoint/sceneflow_epoch_6.pth'
+                  --resume='./checkpoint/sceneflow_epoch_10.pth'
 				  
 exit
 
