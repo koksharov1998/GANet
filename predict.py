@@ -146,6 +146,7 @@ def test(leftname, rightname, savename):
         temp = temp[0, opt.crop_height - height: opt.crop_height, opt.crop_width - width: opt.crop_width]
     else:
         temp = temp[0, :, :]
+    print(savename)
     skimage.io.imsave(savename, (temp * 256).astype('uint16'))
 
    
