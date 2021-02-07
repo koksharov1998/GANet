@@ -19,7 +19,7 @@ from dataloader.data import get_training_set, get_test_set
 
 from PIL import Image
 
-Debug = True
+Debug = False
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
