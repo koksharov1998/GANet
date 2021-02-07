@@ -20,7 +20,7 @@ from torch.utils.data import DataLoader
 from dataloader.data import get_test_set
 import numpy as np
 
-Debug = True
+Debug = False
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
