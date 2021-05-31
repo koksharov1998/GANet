@@ -171,31 +171,19 @@ def load_diplom_data(data_path, current_file):
     disp_right = np.asarray(disp_left)
     r = left[:, :, 0]
     g = left[:, :, 1]
-    b = left[:,:,2]
+    b = left[:, :, 2]
     temp_data[0, :, :] = (r - np.mean(r[:])) / np.std(r[:])
     temp_data[1, :, :] = (g - np.mean(g[:])) / np.std(g[:])
     temp_data[2, :, :] = (b - np.mean(b[:])) / np.std(b[:])
-    r=right[:, :, 0]
-    g=right[:, :, 1]
-    b=right[:, :, 2]
+    r = right[:, :, 0]
+    g = right[:, :, 1]
+    b = right[:, :, 2]
     temp_data[3, :, :] = (r - np.mean(r[:])) / np.std(r[:])
     temp_data[4, :, :] = (g - np.mean(g[:])) / np.std(g[:])
     temp_data[5, :, :] = (b - np.mean(b[:])) / np.std(b[:])
     temp_data[6: 7, :, :] = width * 2
-    print(temp_data[6, :, :])
-    print()
-    print(temp_data[6, :, :].shape)
-    print()
-    print(disp_left.shape)
-    print(disp_left[:, :])
-    temp_data[6, :, :] = disp_left[:,:,0]
-    #temp = temp_data[6, :, :]
-    #temp[temp < 0.1] = width * 2 * 256
-    #temp_data[6, :, :] = temp / 256.
-    temp_data[7, :, :] = disp_right[:,:,0]
-    #temp = temp_data[7, :, :]
-    #temp[temp < 0.1] = width * 2 * 256
-    #temp_data[7, :, :] = temp / 256.
+    temp_data[6, :, :] = disp_left[:, :, 0]
+    temp_data[7, :, :] = disp_right[:, :, 0]
     return temp_data
 
 
