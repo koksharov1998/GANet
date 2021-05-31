@@ -188,11 +188,11 @@ def load_diplom_data(data_path, current_file):
     print()
     print(disp_left.shape)
     print(disp_left[:, :])
-    temp_data[6, :, :] = disp_left[:, :]
+    temp_data[6, :, :] = disp_left[:,:,0]
     #temp = temp_data[6, :, :]
     #temp[temp < 0.1] = width * 2 * 256
     #temp_data[6, :, :] = temp / 256.
-    temp_data[7, :, :] = disp_right[:, :]
+    temp_data[7, :, :] = disp_right[:,:,0]
     #temp = temp_data[7, :, :]
     #temp[temp < 0.1] = width * 2 * 256
     #temp_data[7, :, :] = temp / 256.
