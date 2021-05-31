@@ -15,9 +15,11 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from dataloader.data import get_training_set, get_test_set
+from torch.utils.tensorboard import SummaryWriter
 
 from PIL import Image
 
+writer = SummaryWriter('logs/my_experiment')
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
@@ -136,7 +138,10 @@ def train(epoch):
             valid_iteration += 1
             epoch_error0 += error0.item()
             epoch_error1 += error1.item()
-            epoch_error2 += error2.item()      
+            epoch_error2 += error2.item()
+
+            writer.add_scalar('train loss', loss.item(), epoch)  # записываем значение которое хотим хранить в логах
+
             print("===> Epoch[{}]({}/{}): Loss: {:.4f}, Error: ({:.4f} {:.4f} {:.4f})".format(epoch, iteration, len(training_data_loader), loss.item(), error0.item(), error1.item(), error2.item()))
             sys.stdout.flush()
 
