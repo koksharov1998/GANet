@@ -193,8 +193,6 @@ def adjust_learning_rate(optimizer, epoch):
 
 if __name__ == '__main__':
     error=100
-    if Debug:
-        opt.nEpochs = 6
     for epoch in range(1, opt.nEpochs + 1):
 #        if opt.kitti or opt.kitti2015:
         adjust_learning_rate(optimizer, epoch)
