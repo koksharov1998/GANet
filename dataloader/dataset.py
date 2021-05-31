@@ -182,6 +182,12 @@ def load_diplom_data(data_path, current_file):
     temp_data[4, :, :] = (g - np.mean(g[:])) / np.std(g[:])
     temp_data[5, :, :] = (b - np.mean(b[:])) / np.std(b[:])
     temp_data[6: 7, :, :] = width * 2
+    print(temp_data[6, :, :])
+    print()
+    print(temp_data[6, :, :].shape)
+    print()
+    print(disp_left.shape)
+    print(disp_left[:, :])
     temp_data[6, :, :] = disp_left[:, :]
     #temp = temp_data[6, :, :]
     #temp[temp < 0.1] = width * 2 * 256
