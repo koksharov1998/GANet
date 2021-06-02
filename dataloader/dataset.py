@@ -271,7 +271,7 @@ def load_kitti2015_data(file_path, current_file):
 class DatasetFromList(data.Dataset): 
     def __init__(self, data_path, file_list, crop_size=[256, 256], training=True, left_right=False, kitti=False, kitti2015=False, shift=0):
         super(DatasetFromList, self).__init__()
-        print("Initialization dataset")
+        #print("Initialization dataset")
         #self.image_filenames = [join(image_dir, x) for x in listdir(image_dir) if is_image_file(x)]
         f = open(file_list, 'r')
         self.data_path = data_path
@@ -285,7 +285,7 @@ class DatasetFromList(data.Dataset):
         self.shift = shift
 
     def __getitem__(self, index):
-        print("Get item from dataset")
+        #print("Get item from dataset")
         if self.kitti: #load kitti dataset
             temp_data = load_kitti_data(self.data_path, self.file_list[index])
         elif self.kitti2015: #load kitti2015 dataset
