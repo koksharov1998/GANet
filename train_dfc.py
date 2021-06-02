@@ -136,7 +136,8 @@ def train(epoch):
             epoch_error1 += error1.item()
             epoch_error2 += error2.item()
 
-            writer.add_scalar('train loss', loss.item(), epoch)  # записываем значение которое хотим хранить в логах
+            writer.add_scalar('train loss in epochs', loss.item(), (epoch - 1) * 50 + iteration)  # записываем значение которое хотим хранить в логах
+            writer.add_scalar('train loss in iterations', loss.item(), epoch)  # записываем значение которое хотим хранить в логах
 
             print("===> Epoch[{}]({}/{}): Loss: {:.4f}, Error: ({:.4f} {:.4f} {:.4f})".format(epoch, iteration, len(training_data_loader), loss.item(), error0.item(), error1.item(), error2.item()))
             sys.stdout.flush()
