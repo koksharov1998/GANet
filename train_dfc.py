@@ -39,7 +39,7 @@ parser.add_argument('--shift', type=int, default=0, help='random shift of left i
 parser.add_argument('--kitti', type=int, default=0, help='kitti dataset? Default=False')
 parser.add_argument('--kitti2015', type=int, default=0, help='kitti 2015? Default=False')
 parser.add_argument('--data_path', type=str, default='/ssd1/zhangfeihu/data/stereo/', help="data root")
-parser.add_argument('--training_list', type=str, default='./lists/diplom_train.list', help="training list")
+parser.add_argument('--training_list', type=str, default='./lists/dfc_train.list', help="training list")
 parser.add_argument('--val_list', type=str, default='./lists/sceneflow_test_select.list', help="validation list")
 parser.add_argument('--save_path', type=str, default='./checkpoint/', help="location to save models")
 parser.add_argument('--model', type=str, default='GANet_deep', help="model to train")
@@ -152,7 +152,7 @@ def val():
     valid_iteration = 0
     model.eval()
     for iteration, batch in enumerate(testing_data_loader):
-        input1, input2, target = Variable(batch[0],requires_grad=False), Variable(batch[1], requires_grad=False), Variable(batch[2], requires_grad=False)
+        input1, input2, target = Variable(batch[0], requires_grad=False), Variable(batch[1], requires_grad=False), Variable(batch[2], requires_grad=False)
         if cuda:
             input1 = input1.cuda()
             input2 = input2.cuda()

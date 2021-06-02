@@ -150,17 +150,15 @@ def load_data(data_path, current_file):
     return temp_data
 
 
-def load_diplom_data(data_path, current_file):
+def load_dfc_data(data_path, current_file):
     A = current_file
     data_path = os.getcwd() + data_path
     filename = data_path + 'frames_finalpass/' + A[0: len(A) - 1]
     left = Image.open(filename)
-    filename = data_path + 'frames_finalpass/' + A[0: len(A) - 1].replace("left", "right")
+    filename = data_path + 'frames_finalpass/' + A[0: len(A) - 1].replace("left", "right").replace("LEFT", "RIGHT")
     right = Image.open(filename)
-    filename = data_path + 'disparity/' + A[0: len(A) - 1]
+    filename = data_path + 'disparity/' + A[0: len(A) - 1].replace("RGB", "AGL")
     disp_left = Image.open(filename)
-    filename = data_path + 'disparity/' + A[0: len(A) - 1].replace("left", "right")
-    disp_right = Image.open(filename)
     size = np.shape(left)
     height = size[0]
     width = size[1]
@@ -168,7 +166,6 @@ def load_diplom_data(data_path, current_file):
     left = np.asarray(left)
     right = np.asarray(right)
     disp_left = np.asarray(disp_left)
-    disp_right = np.asarray(disp_left)
     r = left[:, :, 0]
     g = left[:, :, 1]
     b = left[:, :, 2]
@@ -182,8 +179,11 @@ def load_diplom_data(data_path, current_file):
     temp_data[4, :, :] = (g - np.mean(g[:])) / np.std(g[:])
     temp_data[5, :, :] = (b - np.mean(b[:])) / np.std(b[:])
     temp_data[6: 7, :, :] = width * 2
-    temp_data[6, :, :] = disp_left[:, :, 0]
-    temp_data[7, :, :] = disp_right[:, :, 0]
+    temp_data[6, :, :] = disp_left[:, :]
+    temp = temp_data[6, :, :]
+    temp[temp < 0.1] = width * 2 * 256
+    temp_data[6, :, :] = temp / 256.
+
     return temp_data
 
 
@@ -291,7 +291,7 @@ class DatasetFromList(data.Dataset):
         elif self.kitti2015: #load kitti2015 dataset
             temp_data = load_kitti2015_data(self.data_path, self.file_list[index])
         else: #load diplom dataset
-            temp_data = load_diplom_data(self.data_path, self.file_list[index])
+            temp_data = load_dfc_data(self.data_path, self.file_list[index])
         if self.training:
             input1, input2, target = train_transform(temp_data, self.crop_height, self.crop_width, self.left_right, self.shift)
             return input1, input2, target
