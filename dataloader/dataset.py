@@ -100,12 +100,12 @@ def test_transform(temp_data, crop_height, crop_width, left_right=False):
  #       print 'crop_size over size!'
     if h <= crop_height and w <= crop_width:
         temp = temp_data
-        temp_data = np.zeros([8,crop_height,crop_width], 'float32')
+        temp_data = np.zeros([8, crop_height, crop_width], 'float32')
         temp_data[6: 7, :, :] = 1000
         temp_data[:, crop_height - h: crop_height, crop_width - w: crop_width] = temp
     else:
-        start_x = (w-crop_width)/2
-        start_y = (h-crop_height)/2
+        start_x = (w - crop_width) // 2
+        start_y = (h - crop_height) // 2
         temp_data = temp_data[:, start_y: start_y + crop_height, start_x: start_x + crop_width]
    
     left = temp_data[0: 3, :, :]
