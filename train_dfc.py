@@ -147,7 +147,7 @@ def train(epoch):
     except ZeroDivisionError:
         print("valid_iteration was equal to 0!")
 
-def val():
+def val(epoch):
     epoch_error2 = 0
 
     valid_iteration = 0
@@ -167,10 +167,12 @@ def val():
                 disp2 = model(input1,input2)
                 error2 = torch.mean(torch.abs(disp2[mask] - target[mask]))
                 valid_iteration += 1
-                epoch_error2 += error2.item()      
+                epoch_error2 += error2.item()
                 print("===> Test({}/{}): Error: ({:.4f})".format(iteration, len(testing_data_loader), error2.item()))
 
     try:
+        writer.add_scalar('test avg. errorin epochs', epoch_error2 / valid_iteration,
+                          epoch)  # записываем значение которое хотим хранить в логах
         print("===> Test: Avg. Error: ({:.4f})".format(epoch_error2 / valid_iteration))
         return epoch_error2 / valid_iteration
     except ZeroDivisionError:
@@ -199,10 +201,10 @@ if __name__ == '__main__':
         adjust_learning_rate(optimizer, epoch)
         train(epoch)
         is_best = False
-#        loss=val()
-#        if loss < error:
-#            error=loss
-#            is_best = True
+        loss = val(epoch)
+        if loss < error:
+            error=loss
+            is_best = True
         if opt.kitti or opt.kitti2015:
             if epoch%50 == 0 and epoch >= 300:
                 save_checkpoint(opt.save_path, epoch,{
