@@ -10,4 +10,4 @@ list_file_name = "dfc_train.list"
 with open(list_file_name, "w") as list_file:
     for file_name in files:
         list_file.write("DFC/left/" + file_name + "\n")
-
+        
