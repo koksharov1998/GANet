@@ -77,12 +77,12 @@ if cuda:
     model = torch.nn.DataParallel(model).cuda()
 optimizer = optim.Adam(model.parameters(), lr=opt.lr,betas=(0.9,0.999))
 if opt.resume:
-    if os.path.isfile(opt.resume):
-        print("=> loading checkpoint '{}'".format(opt.resume))
-        checkpoint = torch.load(opt.resume)
+    if os.path.isfile(os.getcwd() + opt.resume):
+        print("=> loading checkpoint '{}'".format(os.getcwd() + opt.resume))
+        checkpoint = torch.load(os.getcwd() + opt.resume)
         model.load_state_dict(checkpoint['state_dict'], strict=False)
     else:
-        print("=> no checkpoint found at '{}'".format(opt.resume))
+        print("=> no checkpoint found at '{}'".format(os.getcwd() + opt.resume))
 
 
 def train(epoch):
@@ -136,8 +136,9 @@ def train(epoch):
             epoch_error1 += error1.item()
             epoch_error2 += error2.item()
 
-            writer.add_scalar('train loss in epochs', loss.item(), (epoch - 1) * 50 + iteration)  # записываем значение которое хотим хранить в логах
-            writer.add_scalar('train loss in iterations', loss.item(), epoch)  # записываем значение которое хотим хранить в логах
+            # записываем значение которое хотим хранить в логах
+            writer.add_scalar('train loss in iterations', loss.item(), (epoch - 1) * 50 + iteration)
+            writer.add_scalar('train loss in epochs', loss.item(), epoch)
 
             print("===> Epoch[{}]({}/{}): Loss: {:.4f}, Error: ({:.4f} {:.4f} {:.4f})".format(epoch, iteration, len(training_data_loader), loss.item(), error0.item(), error1.item(), error2.item()))
             sys.stdout.flush()
@@ -171,7 +172,7 @@ def val(epoch):
                 print("===> Test({}/{}): Error: ({:.4f})".format(iteration, len(testing_data_loader), error2.item()))
 
     try:
-        writer.add_scalar('test avg. errorin epochs', epoch_error2 / valid_iteration,
+        writer.add_scalar('test avg. error in epochs', epoch_error2 / valid_iteration,
                           epoch)  # записываем значение которое хотим хранить в логах
         print("===> Test: Avg. Error: ({:.4f})".format(epoch_error2 / valid_iteration))
         return epoch_error2 / valid_iteration
