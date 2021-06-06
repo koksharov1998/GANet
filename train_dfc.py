@@ -15,11 +15,11 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
 from dataloader.data import get_training_set, get_test_set
-from torch.utils.tensorboard import SummaryWriter
+#from torch.utils.tensorboard import SummaryWriter
 
 from PIL import Image
 
-writer = SummaryWriter('logs/my_experiment')
+#writer = SummaryWriter('logs/my_experiment')
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
@@ -137,8 +137,8 @@ def train(epoch):
             epoch_error2 += error2.item()
 
             # записываем значение которое хотим хранить в логах
-            writer.add_scalar('train loss in iterations', loss.item(), (epoch - 1) * 50 + iteration)
-            writer.add_scalar('train loss in epochs', loss.item(), epoch)
+            #writer.add_scalar('train loss in iterations', loss.item(), (epoch - 1) * 50 + iteration)
+            #writer.add_scalar('train loss in epochs', loss.item(), epoch)
 
             print("===> Epoch[{}]({}/{}): Loss: {:.4f}, Error: ({:.4f} {:.4f} {:.4f})".format(epoch, iteration, len(training_data_loader), loss.item(), error0.item(), error1.item(), error2.item()))
             sys.stdout.flush()
@@ -172,8 +172,7 @@ def val(epoch):
                 print("===> Test({}/{}): Error: ({:.4f})".format(iteration, len(testing_data_loader), error2.item()))
 
     try:
-        writer.add_scalar('test avg. error in epochs', epoch_error2 / valid_iteration,
-                          epoch)  # записываем значение которое хотим хранить в логах
+        #writer.add_scalar('test avg. error in epochs', epoch_error2 / valid_iteration,epoch)  # записываем значение которое хотим хранить в логах
         print("===> Test: Avg. Error: ({:.4f})".format(epoch_error2 / valid_iteration))
         return epoch_error2 / valid_iteration
     except ZeroDivisionError:
