@@ -19,6 +19,7 @@ from dataloader.data import get_training_set, get_test_set
 
 from PIL import Image
 
+print(torch.__version__)
 #writer = SummaryWriter('logs/my_experiment')
 
 # Training settings
