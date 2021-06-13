@@ -1,26 +1,20 @@
 from __future__ import print_function
-import argparse
-from math import log10
 
-from libs.GANet.modules.GANet import MyLoss2
-import sys
-import shutil
+import argparse
 import os
+import shutil
+import sys
+
 import torch
-import torch.nn as nn
+import torch.nn.functional as F
 import torch.nn.parallel
-import torch.backends.cudnn as cudnn
 import torch.optim as optim
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
-import torch.nn.functional as F
-from dataloader.data import get_training_set, get_test_set
-#from torch.utils.tensorboard import SummaryWriter
 
-from PIL import Image
+from dataloader.data import get_training_set
+from libs.GANet.modules.GANet import MyLoss2
 
-#print(torch.__version__)
-#writer = SummaryWriter('logs/my_experiment')
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
@@ -137,17 +131,11 @@ def train(epoch):
             epoch_error1 += error1.item()
             epoch_error2 += error2.item()
 
-            # записываем значение которое хотим хранить в логах
-            #writer.add_scalar('train loss in iterations', loss.item(), (epoch - 1) * 50 + iteration)
-            #writer.add_scalar('train loss in epochs', loss.item(), epoch)
-
             print("===> Epoch[{}]({}/{}): Loss: {:.4f}, Error: ({:.4f} {:.4f} {:.4f})".format(epoch, iteration + 1, len(training_data_loader), loss.item(), error0.item(), error1.item(), error2.item()))
             sys.stdout.flush()
 
-    try:
-        print("===> Epoch {} Complete: Avg. Loss: {:.4f}, Avg. Error: ({:.4f} {:.4f} {:.4f})".format(epoch, epoch_loss / valid_iteration,epoch_error0/valid_iteration,epoch_error1/valid_iteration,epoch_error2/valid_iteration))
-    except ZeroDivisionError:
-        print("valid_iteration was equal to 0!")
+    print("===> Epoch {} Complete: Avg. Loss: {:.4f}, Avg. Error: ({:.4f} {:.4f} {:.4f})".format(epoch, epoch_loss / valid_iteration,epoch_error0/valid_iteration,epoch_error1/valid_iteration,epoch_error2/valid_iteration))
+
 
 def val(epoch):
     epoch_error2 = 0
@@ -172,13 +160,9 @@ def val(epoch):
                 epoch_error2 += error2.item()
                 print("===> Test({}/{}): Error: ({:.4f})".format(iteration, len(testing_data_loader), error2.item()))
 
-    try:
-        #writer.add_scalar('test avg. error in epochs', epoch_error2 / valid_iteration,epoch)  # записываем значение которое хотим хранить в логах
-        print("===> Test: Avg. Error: ({:.4f})".format(epoch_error2 / valid_iteration))
-        return epoch_error2 / valid_iteration
-    except ZeroDivisionError:
-        print("valid_iteration was equal to 0!")
-        return -1
+    print("===> Test: Avg. Error: ({:.4f})".format(epoch_error2 / valid_iteration))
+    return epoch_error2 / valid_iteration
+
 
 def save_checkpoint(save_path, epoch,state, is_best):
     filename = save_path + "_epoch_{}.pth".format(epoch)

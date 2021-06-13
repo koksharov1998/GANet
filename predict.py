@@ -1,26 +1,16 @@
 from __future__ import print_function
+
 import argparse
+import os
+
+import numpy as np
 import skimage
 import skimage.io
 import skimage.transform
-from PIL import Image
-from math import log10
-#from GCNet.modules.GCNet import L1Loss
-import sys
-import shutil
-import os
 import torch
-import torch.nn as nn
 import torch.nn.parallel
-import torch.backends.cudnn as cudnn
-import torch.optim as optim
+from PIL import Image
 from torch.autograd import Variable
-from torch.utils.data import DataLoader
-#from models.GANet_deep import GANet
-from dataloader.data import get_test_set
-import numpy as np
-
-Debug = False
 
 # Training settings
 parser = argparse.ArgumentParser(description='PyTorch GANet Example')
@@ -31,21 +21,12 @@ parser.add_argument('--resume', type=str, default='', help="resume from saved mo
 parser.add_argument('--cuda', type=bool, default=True, help='use cuda?')
 parser.add_argument('--kitti', type=int, default=0, help='kitti dataset? Default=False')
 parser.add_argument('--kitti2015', type=int, default=0, help='kitti 2015? Default=False')
-if Debug:
-    parser.add_argument('--data_path', type=str, default='/test/', help="data root")
-    parser.add_argument('--test_list', type=str, default='lists/short_sceneflow_test.list', help="training list")
-else:
-    parser.add_argument('--data_path', type=str, required=True, help="data root")
-    parser.add_argument('--test_list', type=str, required=True, help="training list")
+parser.add_argument('--data_path', type=str, required=True, help="data root")
+parser.add_argument('--test_list', type=str, required=True, help="training list")
 parser.add_argument('--save_path', type=str, default='./result/', help="location to save result")
 parser.add_argument('--model', type=str, default='GANet_deep', help="model to train")
 
 opt = parser.parse_args()
-
-if Debug:
-    opt.max_disp = 192
-    opt.save_path = './result/'
-    opt.resume='./checkpoint/sceneflow_epoch_10.pth'
 
 print(opt)
 if opt.model == 'GANet11':
@@ -54,17 +35,10 @@ elif opt.model == 'GANet_deep':
     from models.GANet_deep import GANet
 else:
     raise Exception("No suitable model found ...")
-    
+
 cuda = opt.cuda
-#cuda = True
 if cuda and not torch.cuda.is_available():
     raise Exception("No GPU found, please run without --cuda")
-
-#torch.manual_seed(opt.seed)
-#if cuda:
-#    torch.cuda.manual_seed(opt.seed)
-#print('===> Loading datasets')
-
 
 print('===> Building model')
 model = GANet(opt.max_disp)
@@ -77,13 +51,13 @@ if opt.resume:
         print("=> loading checkpoint '{}'".format(opt.resume))
         checkpoint = torch.load(opt.resume)
         model.load_state_dict(checkpoint['state_dict'], strict=False)
-       
+
     else:
         print("=> no checkpoint found at '{}'".format(opt.resume))
 
 
 def test_transform(temp_data, crop_height, crop_width):
-    _, h, w=np.shape(temp_data)
+    _, h, w = np.shape(temp_data)
 
     if h <= crop_height and w <= crop_width:
         temp = temp_data
@@ -93,14 +67,14 @@ def test_transform(temp_data, crop_height, crop_width):
         start_x = int((w - crop_width) / 2)
         start_y = int((h - crop_height) / 2)
         temp_data = temp_data[:, start_y: start_y + crop_height, start_x: start_x + crop_width]
-    left = np.ones([1, 3,crop_height,crop_width],'float32')
+    left = np.ones([1, 3, crop_height, crop_width], 'float32')
     left[0, :, :, :] = temp_data[0: 3, :, :]
     right = np.ones([1, 3, crop_height, crop_width], 'float32')
     right[0, :, :, :] = temp_data[3: 6, :, :]
     return torch.from_numpy(left).float(), torch.from_numpy(right).float(), h, w
 
+
 def load_data(leftname, rightname):
-    # print(os.getcwd())
     left = Image.open(os.getcwd() + leftname)
     right = Image.open(os.getcwd() + rightname)
     size = np.shape(left)
@@ -117,21 +91,18 @@ def load_data(leftname, rightname):
     temp_data[2, :, :] = (b - np.mean(b[:])) / np.std(b[:])
     r = right[:, :, 0]
     g = right[:, :, 1]
-    b = right[:, :, 2]	
-    #r,g,b,_ = right.split()
+    b = right[:, :, 2]
     temp_data[3, :, :] = (r - np.mean(r[:])) / np.std(r[:])
     temp_data[4, :, :] = (g - np.mean(g[:])) / np.std(g[:])
     temp_data[5, :, :] = (b - np.mean(b[:])) / np.std(b[:])
     return temp_data
 
+
 def test(leftname, rightname, savename):
-  #  count=0
-    
     input1, input2, height, width = test_transform(load_data(leftname, rightname), opt.crop_height, opt.crop_width)
 
-    
-    input1 = Variable(input1, requires_grad = False)
-    input2 = Variable(input2, requires_grad = False)
+    input1 = Variable(input1, requires_grad=False)
+    input2 = Variable(input2, requires_grad=False)
 
     model.eval()
     if cuda:
@@ -139,7 +110,7 @@ def test(leftname, rightname, savename):
         input2 = input2.cuda()
     with torch.no_grad():
         prediction = model(input1, input2)
-     
+
     temp = prediction.cpu()
     temp = temp.detach().numpy()
     if height <= opt.crop_height and width <= opt.crop_width:
@@ -149,7 +120,7 @@ def test(leftname, rightname, savename):
     print(savename)
     skimage.io.imsave(savename, (temp * 256).astype('uint16'))
 
-   
+
 if __name__ == "__main__":
     file_path = opt.data_path
     file_list = opt.test_list
@@ -168,4 +139,3 @@ if __name__ == "__main__":
 
         savename = opt.save_path + current_file[0: len(current_file) - 1]
         test(leftname, rightname, savename)
-
