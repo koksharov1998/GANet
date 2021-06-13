@@ -19,7 +19,7 @@ from dataloader.data import get_training_set, get_test_set
 
 from PIL import Image
 
-print(torch.__version__)
+#print(torch.__version__)
 #writer = SummaryWriter('logs/my_experiment')
 
 # Training settings
@@ -39,7 +39,7 @@ parser.add_argument('--seed', type=int, default=123, help='random seed to use. D
 parser.add_argument('--shift', type=int, default=0, help='random shift of left image. Default=0')
 parser.add_argument('--kitti', type=int, default=0, help='kitti dataset? Default=False')
 parser.add_argument('--kitti2015', type=int, default=0, help='kitti 2015? Default=False')
-parser.add_argument('--data_path', type=str, default='/ssd1/zhangfeihu/data/stereo/', help="data root")
+parser.add_argument('--data_path', type=str, default='/data/', help="data root")
 parser.add_argument('--training_list', type=str, default='./lists/dfc_train.list', help="training list")
 parser.add_argument('--val_list', type=str, default='./lists/sceneflow_test_select.list', help="validation list")
 parser.add_argument('--save_path', type=str, default='./checkpoint/', help="location to save models")
@@ -66,9 +66,9 @@ if cuda:
 
 print('===> Loading datasets')
 train_set = get_training_set(opt.data_path, opt.training_list, [opt.crop_height, opt.crop_width], opt.left_right, opt.kitti, opt.kitti2015, opt.shift)
-test_set = get_test_set(opt.data_path, opt.val_list, [576, 960], opt.left_right, opt.kitti, opt.kitti2015)
+#test_set = get_test_set(opt.data_path, opt.val_list, [576, 960], opt.left_right, opt.kitti, opt.kitti2015)
 training_data_loader = DataLoader(dataset=train_set, num_workers=opt.threads, batch_size=opt.batchSize, shuffle=True)
-testing_data_loader = DataLoader(dataset=test_set, num_workers=opt.threads, batch_size=opt.testBatchSize, shuffle=False)
+#testing_data_loader = DataLoader(dataset=test_set, num_workers=opt.threads, batch_size=opt.testBatchSize, shuffle=False)
 
 print('===> Building model')
 model = GANet(opt.max_disp)
@@ -141,7 +141,7 @@ def train(epoch):
             #writer.add_scalar('train loss in iterations', loss.item(), (epoch - 1) * 50 + iteration)
             #writer.add_scalar('train loss in epochs', loss.item(), epoch)
 
-            print("===> Epoch[{}]({}/{}): Loss: {:.4f}, Error: ({:.4f} {:.4f} {:.4f})".format(epoch, iteration, len(training_data_loader), loss.item(), error0.item(), error1.item(), error2.item()))
+            print("===> Epoch[{}]({}/{}): Loss: {:.4f}, Error: ({:.4f} {:.4f} {:.4f})".format(epoch, iteration + 1, len(training_data_loader), loss.item(), error0.item(), error1.item(), error2.item()))
             sys.stdout.flush()
 
     try:
@@ -192,7 +192,7 @@ def adjust_learning_rate(optimizer, epoch):
        lr = opt.lr
     else:
        lr = opt.lr*0.1
-    print(lr)
+    #print(lr)
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
@@ -202,10 +202,10 @@ if __name__ == '__main__':
         adjust_learning_rate(optimizer, epoch)
         train(epoch)
         is_best = False
-        loss = val(epoch)
-        if loss < error:
-            error=loss
-            is_best = True
+        #loss = val(epoch)
+        #if loss < error:
+        #    error=loss
+        #    is_best = True
         if opt.kitti or opt.kitti2015:
             if epoch%50 == 0 and epoch >= 300:
                 save_checkpoint(opt.save_path, epoch,{
