@@ -134,7 +134,7 @@ def load_data(data_path, current_file):
     right = np.asarray(right)
     r = left[:, :, 0]
     g = left[:, :, 1]
-    b = left[:,:,2]
+    b = left[:, :, 2]
     temp_data[0, :, :] = (r - np.mean(r[:])) / np.std(r[:])
     temp_data[1, :, :] = (g - np.mean(g[:])) / np.std(g[:])
     temp_data[2, :, :] = (b - np.mean(b[:])) / np.std(b[:])
