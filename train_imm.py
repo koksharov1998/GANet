@@ -14,7 +14,7 @@ import torch.optim as optim
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
-from dataloader.data import get_training_set, get_test_set
+from dataloader.data_imm import get_training_set, get_test_set
 #from torch.utils.tensorboard import SummaryWriter
 
 from PIL import Image

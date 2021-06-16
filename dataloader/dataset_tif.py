@@ -4,6 +4,7 @@ import torch.utils.data as data
 import skimage
 import skimage.io
 import skimage.transform
+import tifffile
 
 from PIL import Image
 import numpy as np
@@ -154,11 +155,11 @@ def load_dfc_data(data_path, current_file):
     A = current_file
     data_path = os.getcwd() + data_path
     filename = data_path + 'frames_finalpass/' + A[0: len(A) - 1]
-    left = Image.open(filename)
+    left = tifffile.imread(filename)
     filename = data_path + 'frames_finalpass/' + A[0: len(A) - 1].replace("left", "right").replace("LEFT", "RIGHT")
-    right = Image.open(filename)
+    right = tifffile.imread(filename)
     filename = data_path + 'disparity/' + A[0: len(A) - 1].replace("RGB", "AGL")
-    disp_left = Image.open(filename)
+    disp_left = tifffile.imread(filename)
     size = np.shape(left)
     height = size[0]
     width = size[1]
